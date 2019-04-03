@@ -1,0 +1,25 @@
+{
+  "name": "mu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "pcap": "https://github.com/mranney/node_pcap#fff6919e15b34ebbf5e7c0b1f1e61ae84dcbcb39",
+    "port-mux": "0.0.9",
+    "raw-socket": "^1.5.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tocher/emulator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tocher/emulator/issues"
+  },
+  "homepage": "https://github.com/Tocher/emulator#readme"
+}
