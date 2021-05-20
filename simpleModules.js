@@ -118,6 +118,7 @@ class SimpleModules {
         var contentSize = this.GetContentSize(buffer, true);
         var part1 = Math.floor(contentSize / this.DecryptedBlockSize);
         var part2 = (contentSize % this.DecryptedBlockSize) > 0 ? 1 : 0;
+        console.log(contentSize, part1, part2);
 
         return ((part1 + part2) * this.EncryptedBlockSize) + this.GetPacketHeaderSize(buffer);
     }

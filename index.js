@@ -86,23 +86,25 @@ function preparePacket(packet) {
 //console.log(encFinalLoginPacket);
 
 
+const MausMu2 = '176.99.158.82';
 var evoMu = '173.212.240.106';
 var localIp = '10.211.55.5';
 var ip = '37.233.54.84'; // legendOfMu там другой протокол
 var ip2 = '178.124.144.169'; // mu-stels.ru // port 55921
 var megaMu = '144.76.110.213'; // megamu.ru // port 55901
+var local = '165.227.90.236'; //'64.225.71.233'; // 127.0.0.1';
 
-//var finalMu = '91.134.175.57';
+var finalMu = '91.134.175.57';
 var goldMu = '151.80.28.49'; // 151.80.28.49:56900
 var epochMu = '137.74.58.106';
 
-client.connect(44405, evoMu, function() {
-    console.log('Connected');
-});
+// client.connect(44405, local, function() {
+//     console.log('Connected');
+// });
 
-//gameserver2.connect(56900, goldMu, function() {
-//    console.log('Connected to GameServer');
-//});
+gameserver2.connect(55901, local, function() {
+  console.log('Connected to GameServer');
+});
 
 gameserver2.on('data', function(data) {
     console.log(data.toString('hex'));
@@ -169,13 +171,13 @@ gameserver.on('data', function(data) {
         var clientSerial = 'k1Pk2jcET48mxL3b'; // 16 length!
         var tickCount = os.uptime() * 1000; // in milliseconds
 
-        var loginInHex = 'tocher'.hexEncode();
+        var loginInHex = 'test0'.hexEncode();
         var username = Buffer.alloc(10);
         loginInHex.forEach(function(e, i) {
             username[i] = e;
         });
 
-        var passInHex = 'tocher'.hexEncode();
+        var passInHex = 'test0'.hexEncode();
         var password = Buffer.alloc(20);
         passInHex.forEach(function(e, i) {
             password[i] = e;
@@ -194,8 +196,12 @@ gameserver.on('data', function(data) {
         var encLoginPacket = encryptor.InternalEncrypt32(loginRequest);
         var encFinalLoginPacket = encryptor.EncryptC3(encLoginPacket);
 
+        console.log(clientSerial.hexEncode());
         //decryptLogin(encFinalLoginPacket);
-        //console.log(encFinalLoginPacket.toString('hex'));
+        console.log('EEE');
+        console.log(loginRequest.toString('hex'));
+        console.log(encFinalLoginPacket.toString('hex'));
+
         gameserver.write(encFinalLoginPacket);
     }
 
@@ -262,13 +268,15 @@ client.on('data', function(data) {
                 if (packetCode === 'f4' && packetSubcode === '03') {
                     var packetData = packetFromServer.substr(8);
 
+			console.log('ipLength', packetData.length - 4);
                     var ip = hex2a(packetData.substr(0, packetData.length - 4));
                     var port = packetData.substr(packetData.length - 4);
                     // последние 4 байта, хз что (71da) в хексе
+                    // 5dda - 55901
 
-                    console.log(ip);
-                    console.log(port);
-
+                    console.log('ip:', ip);
+                    //console.log(port);
+                    console.log('port:', Buffer.from(port, 'hex').readUInt16LE());
 
                     var loginRequestHeader = [
                         0xc3, 0x00, 0xf1, 0x01
@@ -277,13 +285,13 @@ client.on('data', function(data) {
                     var clientSerial = 'k1Pk2jcET48mxL3b'; // 16 length!
                     var tickCount = os.uptime() * 1000; // in milliseconds
 
-                    var loginInHex = 'tocher'.hexEncode();
+                    var loginInHex = 'test0'.hexEncode();
                     var username = Buffer.alloc(10);
                     loginInHex.forEach(function(e, i) {
                         username[i] = e;
                     });
 
-                    var passInHex = 'tocher'.hexEncode();
+                    var passInHex = 'test0'.hexEncode();
                     var password = Buffer.alloc(20);
                     passInHex.forEach(function(e, i) {
                         password[i] = e;
@@ -301,6 +309,11 @@ client.on('data', function(data) {
 
                     var encLoginPacket = encryptor.InternalEncrypt32(loginRequest);
                     var encFinalLoginPacket = encryptor.EncryptC3(encLoginPacket);
+
+                    console.log('decrypted login');
+                    console.log(loginRequest);
+                    console.log('encrypted login');
+                    console.log(encFinalLoginPacket);
 
                     //gameserver.write(encFinalLoginPacket);
 

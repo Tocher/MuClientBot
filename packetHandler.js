@@ -225,7 +225,9 @@ class packetHandler {
                                 console.log('Player Id: ', playerId);
                                 console.log('Version: ', version);
 
-                                this.sendC3(this.packetList.login('tocher', 'tocher'));
+                                var loginRequest = this.packetList.login('test0', 'test0');
+                                console.log('LOGIN REQUEST:', loginRequest.toString('hex'));
+                                this.sendC3(loginRequest);
 
                                 break;
                             case '01':
@@ -416,7 +418,10 @@ class packetHandler {
 
     sendC3(packet) {
         packet = this.encryptor.InternalEncrypt32(packet);
+        console.log('PACK AFTER 32:', packet.toString('hex'));
         packet = this.encryptor.EncryptC3(packet);
+
+        console.log(packet.toString('hex'));
 
         this.gameserver.write(packet);
     }

@@ -10,12 +10,18 @@ class Encryptor extends simpleModules {
         var contentSize = this.GetContentSize(buffer, true);
         var contents = buffer.slice(1); // контент это все кроме c1/c2/c3/c4
         var result = this.GetEncryptedSize(buffer);
+        console.log('Стало:', result);
+        console.log(buffer.join(' '));
         contents[0] = 0; // должно быть = Counter.Count и видимо увеличиваться
         var resultBuffer = this.EncodeBuffer(contents, headerSize, contentSize, result);
+
+        console.log('Было:', contentSize);
+        console.log('Стало:', result);
 
         // TODO C4 с большим пакетом
         resultBuffer[0] = buffer[0];
         resultBuffer[1] = result;
+        console.log('Стало:', resultBuffer);
 
         return resultBuffer;
     }
@@ -32,11 +38,16 @@ class Encryptor extends simpleModules {
                 DecryptedBlockBuffer = inputBuffer.slice(i, i + this.DecryptedBlockSize);
 
                 EncryptedBlockBuffer = this.BlockEncode(DecryptedBlockBuffer, this.DecryptedBlockSize);
+
+                console.log(DecryptedBlockBuffer);
+                console.log(EncryptedBlockBuffer);
             } else {
                 DecryptedBlockBuffer = Buffer.alloc(this.DecryptedBlockSize);
                 inputBuffer.copy(DecryptedBlockBuffer, 0, i, size);
 
                 EncryptedBlockBuffer = this.BlockEncode(DecryptedBlockBuffer, size - i);
+                console.log(DecryptedBlockBuffer);
+                console.log(EncryptedBlockBuffer);
             }
 
             for(var j = 0; j < EncryptedBlockBuffer.length; j++) {
@@ -60,6 +71,8 @@ class Encryptor extends simpleModules {
         var byte3 = buffer.readUInt16LE(4);
         var byte4 = buffer.readUInt16LE(6);
 
+        console.log(byte1, byte2, byte3, byte4);
+
         var part1 = (this.clientEncryptor.xor[0] ^ byte1) * this.clientEncryptor.enc[0] % this.clientEncryptor.mod[0];
         var part2 = (this.clientEncryptor.xor[1] ^ byte2 ^ (part1 & 0xFFFF)) * this.clientEncryptor.enc[1] % this.clientEncryptor.mod[1];
         var part3 = (this.clientEncryptor.xor[2] ^ byte3 ^ (part2 & 0xFFFF)) * this.clientEncryptor.enc[2] % this.clientEncryptor.mod[2];
@@ -68,6 +81,8 @@ class Encryptor extends simpleModules {
         part1 = part1 ^ this.clientEncryptor.xor[0] ^ (part2 & 0xFFFF);
         part2 = part2 ^ this.clientEncryptor.xor[1] ^ (part3 & 0xFFFF);
         part3 = part3 ^ this.clientEncryptor.xor[2] ^ (part4 & 0xFFFF);
+
+        console.log(part1, part2, part3, part4);
 
         var ring = new Uint32Array([part1, part2, part3, part4]);
         // создаем пустой буфер

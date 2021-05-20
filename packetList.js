@@ -49,6 +49,13 @@ class packetList {
         ]);
         loginRequest[1] = loginRequest.length;
 
+        console.log(this.loginRequestHeader);
+        console.log(this.encryptor.InternalEncrypt(username, 0));
+        console.log(this.encryptor.InternalEncrypt(password, 0));
+        console.log(Buffer.from(this.tickCount.toString(16), 'hex'));
+        console.log(this.clientVersion);
+        console.log(Buffer.from(this.clientSerial.hexEncode()));
+
         return loginRequest;
     }
 
